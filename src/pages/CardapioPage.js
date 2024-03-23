@@ -1,21 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import PizzaItem from '../components/PizzaItem';
+import { useNavigation } from '@react-navigation/native';
 
-const Cardapio = (props) => {
+const Cardapio = () => {
+  const navigation = useNavigation();
+  const [carrinho, setCarrinho] = useState([]);
+  
+ const precoSelecionado = (pizza, tamanhoSelecionado) => {
+   switch (tamanhoSelecionado) {
+    case 'Pequena':
+      return pizza.precoP;
+    case 'Média':
+      return pizza.precoM;
+    case 'Grande':
+      return pizza.precoG;
+    default:
+      return 0; // ou um valor padrão para lidar com erros
+  }
+
+ };
+ const adicionarAoCarrinho = (pizza, tamanhoSelecionado, precoSelecionado) => {
+  // Obtendo o preço correspondente ao tamanho selecionado
+  // Passando o preço e o tamanho selecionado para o carrinho
+  setCarrinho([...carrinho, { ...pizza, tamanhoSelecionado, precoSelecionado}]);
+};
 
   const onPress = () => {
-    props.navigation.navigate("Carrinho");
-  }
-    
-   return (
+    navigation.navigate("Carrinho", { itensCarrinho: [...carrinho] });
+  };
+
+  return (
     <View style={styles.container}>
       <Text style={styles.header}>Larika's Pizza®</Text>
-      {pizzas.map((pizza, index) => (
-        <PizzaItem key={index} {...pizza} />
-      ))}
+    {pizzas.map((pizza, index,) => (
+  <PizzaItem
+    key={index}
+     {...pizza}
+
+    adicionarAoCarrinho={adicionarAoCarrinho}
+    precoSelecionado={precoSelecionado}
+  />
+))}
+      
       <View style={styles.footer}>
-        <TouchableOpacity onPress={onPress} style={styles.button}>
+        <TouchableOpacity onPress={onPress} style={styles.button} >
           <Text style={styles.buttonText}>Ver Carrinho</Text>
         </TouchableOpacity>
         <Text style={styles.contatoTitle}>Telefone de Contato:</Text>
@@ -28,24 +57,27 @@ const Cardapio = (props) => {
 const pizzas = [
   {
     sabor: "Calabresa",
-    precoP: 40,
-    precoM: 50,
-    precoG: 70,
+      precoP: 40,
+      precoM: 50,
+      precoG: 70,
     precoAntigo: 120 // Defina o preço antigo conforme necessário
+
+
   },
   {
     sabor: "Quatro Queijos",
-    precoP: 40,
-    precoM: 50,
-    precoG: 70,
+      precoP: 40,
+      precoM: 50,
+      precoG: 70,
     precoAntigo: 110 // Defina o preço antigo conforme necessário
   },
   {
     sabor: "Portuguesa",
-    precoP: 50,
-    precoM: 60,
-    precoG: 85,
+     precoP: 50,
+      precoM: 60,
+      precoG: 85,
     precoAntigo: 120
+    
   }
   // Adicione mais pizzas conforme necessário
 ];
